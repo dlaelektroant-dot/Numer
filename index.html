@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Numerki gadające</title>
+</head>
+<body>
+
+<h1>Generator numerków 🔢</h1>
+
+<input id="numberInput" type="number" placeholder="Wpisz numer">
+<button onclick="sayNumber()">Gadaj</button>
+
+<button onclick="randomNumber()">Losowy numerek 🎲</button>
+
+<script>
+function sayNumber() {
+  const number = document.getElementById("numberInput").value;
+
+  if (!number) {
+    alert("Podaj numer 😅");
+    return;
+  }
+
+  speak(number);
+}
+
+function randomNumber() {
+  const num = Math.floor(Math.random() * 100) + 1;
+  speak(num);
+}
+
+function speak(text) {
+  const msg = new SpeechSynthesisUtterance(text);
+  msg.lang = "pl-PL"; // polski głos
+  speechSynthesis.speak(msg);
+}
+</script>
+
+</body>
+</html>
