@@ -2,39 +2,50 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Numerki gadające</title>
+  <title>Numerki LIVE</title>
 </head>
-<body>
 
-<h1>Generator numerków 🔢</h1>
+<body style="text-align:center; font-size:50px;">
 
-<input id="numberInput" type="number" placeholder="Wpisz numer">
-<button onclick="sayNumber()">Gadaj</button>
+<h1 id="num">--</h1>
 
-<button onclick="randomNumber()">Losowy numerek 🎲</button>
+<input id="inp" type="number" placeholder="Wpisz numer">
+<button onclick="send()">Wyślij</button>
 
-<script>
-function sayNumber() {
-  const number = document.getElementById("numberInput").value;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-  if (!number) {
-    alert("Podaj numer 😅");
-    return;
+const firebaseConfig = {
+  apiKey: "AIzaSyAnTqYWvdHDnTdtbkcjmRLywbNj2oQIemI",
+  authDomain: "numerki-cdcf9.firebaseapp.com",
+  databaseURL: "https://numerki-cdcf9-default-rtdb.firebaseio.com/",
+  projectId: "numerki-cdcf9",
+  storageBucket: "numerki-cdcf9.firebasestorage.app",
+  messagingSenderId: "142380598524",
+  appId: "1:142380598524:web:4a2b68a278106ae12ac379"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 📤 wysyłanie numeru
+window.send = function() {
+  const num = document.getElementById("inp").value;
+  set(ref(db, "number"), num);
+};
+
+// 📺 odbieranie numeru
+onValue(ref(db, "number"), (snapshot) => {
+  const val = snapshot.val();
+  document.getElementById("num").innerText = val;
+
+  if (val) {
+    const msg = new SpeechSynthesisUtterance("Numerek " + val);
+    msg.lang = "pl-PL";
+    speechSynthesis.speak(msg);
   }
-
-  speak(number);
-}
-
-function randomNumber() {
-  const num = Math.floor(Math.random() * 100) + 1;
-  speak(num);
-}
-
-function speak(text) {
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang = "pl-PL"; // polski głos
-  speechSynthesis.speak(msg);
-}
+});
 </script>
 
 </body>
